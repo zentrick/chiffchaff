@@ -25,7 +25,7 @@
   "dependencies": {
     "babel-runtime": "^5.5.6",
     "bluebird": "^2.9.34",
-    "chiffchaff-base-batch": "*",
+    "chiffchaff-base-batch": "^0.0.1",
     "debug": "^2.2.0"
   },
   "devDependencies": {
