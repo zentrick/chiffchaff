@@ -1,6 +1,6 @@
 {
   "name": "chiffchaff-base-aggregate",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Aggregate task execution for chiffchaff.",
   "keywords": [
     "async",
