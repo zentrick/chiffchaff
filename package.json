@@ -1,0 +1,64 @@
+{
+  "name": "chiffchaff",
+  "version": "0.0.0",
+  "description": "Cancellable promises with progress reporting.",
+  "keywords": [
+    "async",
+    "await",
+    "browser",
+    "deferred",
+    "deferreds",
+    "es6",
+    "flow control",
+    "future",
+    "futures",
+    "node",
+    "promise",
+    "promises",
+    "promises-a",
+    "promises-aplus"
+  ],
+  "author": "Zentrick nv (https://www.zentrick.com/)",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "babel-runtime": "^5.5.6",
+    "bluebird": "^2.9.34",
+    "debug": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel": "^5.5.6",
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0",
+    "del": "^2.0.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-coveralls": "^0.1.4",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-mocha": "^2.1.1",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.0.1",
+    "isparta": "^3.0.3",
+    "mkdirp": "^0.5.0"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist/index.js",
+    "index.js"
+  ],
+  "scripts": {
+    "build": "gulp build",
+    "prepublish": "npm run build",
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zentrick/chiffchaff"
+  },
+  "bugs": {
+    "url": "https://github.com/zentrick/chiffchaff/issues"
+  },
+  "license": "MIT"
+}
