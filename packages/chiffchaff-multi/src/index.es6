@@ -1,9 +1,10 @@
 'use strict'
 
 import _debug from 'debug'
-const debug = _debug('chiffchaff:AggregateTask')
+const debug = _debug('chiffchaff:MapTask')
 
 import Task from 'chiffchaff'
+import Promise from 'bluebird'
 import defaults from 'defaults'
 
 const checkAndNormalizeWeights = (weights, count) => {
@@ -34,45 +35,69 @@ const createDefaultWeights = num => {
   return weights
 }
 
-export default class AggregateTask extends Task {
+const createProgressArray = num => {
+  const progress = []
+  for (let i = 0; i < num; ++i) {
+    progress.push(0)
+  }
+  return progress
+}
+
+// TODO Rename to chiffchaff-map
+export default class MapTask extends Task {
   constructor (tasks, options) {
     super()
     this._tasks = tasks
-    this._options = defaults(options, this.constructor._defaultOptions)
+    this._options = defaults(options, {
+      cancel: false,
+      concurrency: 1,
+      size: Array.isArray(this._tasks) ? this._tasks.length : 0,
+      weights: null
+    })
     this._options.weights = Array.isArray(this._options.weights) ?
-      checkAndNormalizeWeights(this._options.weights, tasks.length) :
-      createDefaultWeights(this._tasks.length)
+      checkAndNormalizeWeights(this._options.weights, this.size) :
+      createDefaultWeights(this.size)
   }
 
-  static _defaultOptions () {
-    return {}
-  }
-
-  _startAll () {
-    throw new Error('Method is abstract')
+  get size () {
+    return (this._options.size < 0) ? this._tasks.length : this._options.size
   }
 
   _start () {
-    this._initProgressArray()
-    return this._startAll()
-  }
-
-  _initProgressArray () {
-    this._progress = []
-    for (let i = 0; i < this._tasks.length; ++i) {
-      this._progress.push(0)
-    }
-    return this._progress
+    this._progress = createProgressArray(this._tasks.length)
+    return Promise.map(this._options.weights,
+      (_, idx) => this._startOne(idx),
+      {concurrency: this._options.concurrency})
   }
 
   _startOne (idx) {
-    return this._tasks[idx]
-      .on('progress', (compl, total) => this._setProgress(idx, compl / total))
-      .start()
+    const task = this._getNext(idx)
+    const promise = task.start()
+    if (this._options.cancel && !promise.isCancellable()) {
+      return Promise.reject(new Error(`Promise from ${task} is not cancellable`))
+    }
+    task.on('progress', (compl, total) => this._setProgress(idx, compl / total))
+    const promiseWithCompletion = promise
       .then(res => {
         this._setProgress(idx, 1)
         return res
       })
+    if (!this._options.cancel) {
+      return promiseWithCompletion
+    }
+    return promiseWithCompletion
+      .catch(err => {
+        if (!(err instanceof Promise.CancellationError)) {
+          debug(`Error from auto-cancelling ${this}: ${err}`)
+        }
+        this._cancelAll()
+        throw err
+      })
+  }
+
+  _getNext (idx) {
+    return Array.isArray(this._tasks) ? this._tasks[idx] :
+      this._tasks.next().value
   }
 
   _setProgress (idx, progress) {
@@ -81,15 +106,25 @@ export default class AggregateTask extends Task {
       return
     }
     this._progress[idx] = progress
+    this._reportProgress()
+  }
+
+  _reportProgress () {
     const weights = this._options.weights
     const total = this._progress.reduce((s, p, i) => s + p * weights[i], 0)
     debug(`${this} progress: ${this._progress}, weights: ${weights}, total: ${total}`)
     this._notify(total, 1)
   }
 
+  _cancelAll () {
+    const promises = this._tasks.map(t => t.promise).filter(p => !!p)
+    debug(`Trying to cancel ${promises.length} promise(s)`)
+    promises.forEach(promise => promise.cancel())
+  }
+
   toString () {
     return super.toString() + '<' +
-      this._tasks.map(op => op.toString()).join(',') +
+      this._tasks.map(task => task.toString()).join(',') +
       '>'
   }
 }

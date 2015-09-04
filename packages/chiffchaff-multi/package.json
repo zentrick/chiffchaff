@@ -1,5 +1,5 @@
 {
-  "name": "chiffchaff-base-aggregate",
+  "name": "chiffchaff-map",
   "version": "0.0.1",
   "description": "Aggregate task execution for chiffchaff.",
   "keywords": [
@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "babel-runtime": "^5.5.6",
-    "chiffchaff": "^0.0.1",
+    "bluebird": "^2.9.34",
+    "chiffchaff": "^0.0.2",
     "debug": "^2.2.0"
   },
   "devDependencies": {
@@ -49,17 +50,17 @@
     "index.js"
   ],
   "scripts": {
-    "clean": "gulp clean",
     "build": "gulp build",
+    "clean": "gulp clean",
     "prepublish": "npm run clean && npm run build",
     "test": "gulp test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/zentrick/chiffchaff-base-aggregate"
+    "url": "git://github.com/zentrick/chiffchaff-map"
   },
   "bugs": {
-    "url": "https://github.com/zentrick/chiffchaff-base-aggregate/issues"
+    "url": "https://github.com/zentrick/chiffchaff-map"
   },
   "license": "MIT"
 }
