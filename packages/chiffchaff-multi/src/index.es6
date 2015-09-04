@@ -77,7 +77,7 @@ export default class MultiTask extends Task {
         checkAndNormalizeWeights(this._options.weights, this.size) :
         createDefaultWeights(this.size)
     }
-    this._progress = createProgressArray(this._tasks.length)
+    this._progress = createProgressArray(this.size)
     this._index = 0
     const options = {concurrency: this._options.concurrency}
     return Promise.map(this._progress, () => this._startOne(), options)
@@ -165,8 +165,8 @@ export default class MultiTask extends Task {
   }
 
   toString () {
-    return super.toString() + '<' +
-      this._tasks.map(task => task.toString()).join(',') +
-      '>'
+    return this.name + (Array.isArray(this._tasks) ?
+      '<' + this._tasks.map(task => task.toString()).join(',') + '>' :
+      '[' + this.size + ']')
   }
 }
