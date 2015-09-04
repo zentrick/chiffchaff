@@ -16,10 +16,12 @@ export default class PipeTask extends Task {
 
   _start () {
     return new Promise((resolve, reject) => {
+      this._source
+        .once('error', reject)
       this._destination
-        .once('finish', resolve)
         .once('error', reject)
       this._source.pipe(this._destination)
+        .once('finish', resolve)
         .once('error', reject)
     })
       .cancellable()
