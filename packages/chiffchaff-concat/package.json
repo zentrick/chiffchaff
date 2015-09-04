@@ -24,9 +24,8 @@
   },
   "dependencies": {
     "babel-runtime": "^5.5.6",
-    "bluebird": "^2.9.34",
-    "chiffchaff-base-batch": "^0.0.1",
-    "debug": "^2.2.0"
+    "chiffchaff-multi": "^0.0.4",
+    "chiffchaff-pipe": "^0.0.2"
   },
   "devDependencies": {
     "babel": "^5.5.6",
@@ -50,8 +49,8 @@
     "index.js"
   ],
   "scripts": {
-    "clean": "gulp clean",
     "build": "gulp build",
+    "clean": "gulp clean",
     "prepublish": "npm run clean && npm run build",
     "test": "gulp test"
   },
