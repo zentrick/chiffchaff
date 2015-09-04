@@ -1,11 +1,28 @@
 'use strict'
 
 import _debug from 'debug'
-const debug = _debug('chiffchaff:MapTask')
+const debug = _debug('chiffchaff:MultiTask')
 
 import Task from 'chiffchaff'
 import Promise from 'bluebird'
 import defaults from 'defaults'
+
+const createDefaultWeights = num => {
+  const weight = 1 / num
+  const weights = []
+  for (let i = 0; i < num; ++i) {
+    weights.push(weight)
+  }
+  return weights
+}
+
+const createProgressArray = num => {
+  const progress = []
+  for (let i = 0; i < num; ++i) {
+    progress.push({completed: 0, total: -1})
+  }
+  return progress
+}
 
 const checkAndNormalizeWeights = (weights, count) => {
   if (weights.length !== count) {
@@ -26,48 +43,45 @@ const checkAndNormalizeWeights = (weights, count) => {
   return weights.map(w => w / total)
 }
 
-const createDefaultWeights = num => {
-  const weight = 1 / num
-  const weights = []
-  for (let i = 0; i < num; ++i) {
-    weights.push(weight)
-  }
-  return weights
-}
-
-const createProgressArray = num => {
-  const progress = []
-  for (let i = 0; i < num; ++i) {
-    progress.push(0)
-  }
-  return progress
-}
-
-export default class MapTask extends Task {
+export default class MultiTask extends Task {
   constructor (tasks, options) {
     super()
     this._tasks = tasks
     this._options = defaults(options, {
       cancel: false,
       concurrency: 1,
-      size: Array.isArray(this._tasks) ? this._tasks.length : 0,
-      weights: null
+      size: -1,
+      weights: null,
+      ignoreWeights: false
     })
-    this._options.weights = Array.isArray(this._options.weights) ?
-      checkAndNormalizeWeights(this._options.weights, this.size) :
-      createDefaultWeights(this.size)
+  }
+
+  get options () {
+    return this._options
   }
 
   get size () {
     return (this._options.size < 0) ? this._tasks.length : this._options.size
   }
 
+  add (task) {
+    if (!Array.isArray(this._tasks)) {
+      throw new Error('Cannot add task')
+    }
+    this._tasks.push(task)
+  }
+
   _start () {
+    if (!this._options.ignoreWeights) {
+      this._weights = Array.isArray(this._options.weights) ?
+        checkAndNormalizeWeights(this._options.weights, this.size) :
+        createDefaultWeights(this.size)
+    }
     this._progress = createProgressArray(this._tasks.length)
     this._index = 0
-    return Promise.map(this._options.weights,
-      () => this._startOne(),
-      {concurrency: this._options.concurrency})
+    const options = {concurrency: this._options.concurrency}
+    return Promise.map(this._weights, () => this._startOne(), options)
+      .cancellable()
   }
 
   _startOne () {
@@ -77,21 +91,17 @@ export default class MapTask extends Task {
     if (this._options.cancel && !promise.isCancellable()) {
       return Promise.reject(new Error(`Promise from ${task} is not cancellable`))
     }
-    task.on('progress', (compl, total) => this._setProgress(idx, compl / total))
-    const promiseWithCompletion = promise
+    task.on('progress', (compl, total) => this._setProgress(idx, compl, total))
+    return promise
       .then(res => {
-        this._setProgress(idx, 1)
+        this._onComplete(idx)
         return res
       })
-    if (!this._options.cancel) {
-      return promiseWithCompletion
-    }
-    return promiseWithCompletion
       .catch(err => {
-        if (!(err instanceof Promise.CancellationError)) {
-          debug(`Error from auto-cancelling ${this}: ${err}`)
+        debug(`Error from ${task}: ${err}`)
+        if (this._options.cancel) {
+          this._cancelAll()
         }
-        this._cancelAll()
         throw err
       })
   }
@@ -101,20 +111,51 @@ export default class MapTask extends Task {
       this._tasks.next().value
   }
 
-  _setProgress (idx, progress) {
-    if (this._progress[idx] === progress) {
-      debug(`${this} progress already at ${progress}`)
-      return
+  _onComplete (idx) {
+    if (this._progress[idx].total < 0) {
+      this._progress[idx].total = 0
     }
-    this._progress[idx] = progress
+    this._progress[idx].completed = this._progress[idx].total
+    this._reportProgress()
+  }
+
+  _setProgress (idx, completed, total) {
+    this._progress[idx].completed = completed
+    this._progress[idx].total = total
     this._reportProgress()
   }
 
   _reportProgress () {
-    const weights = this._options.weights
-    const total = this._progress.reduce((s, p, i) => s + p * weights[i], 0)
-    debug(`${this} progress: ${this._progress}, weights: ${weights}, total: ${total}`)
+    const total = this._options.ignoreWeights ?
+      this._computedAdaptiveProgress() :
+      this._computeWeightedProgress()
+    const pStr = JSON.stringify(this._progress)
+    debug(`${this} progress: ${pStr}, weights: ${this._weights}, total: ${total}`)
     this._notify(total, 1)
+  }
+
+  _computeWeightedProgress () {
+    return this._progress.reduce(
+      (sum, {completed, total}, i) => {
+        const progress = (total > 0) ? completed / total : 0
+        return sum + this._weights[i] * progress
+      }, 0)
+  }
+
+  _computeAdaptiveProgress () {
+    let totalCompleted = 0
+    let grandTotal = 0
+    let unstarted = 0
+    this._progress.forEach(({completed, total}, i) => {
+      if (total < 0) {
+        ++unstarted
+        return
+      }
+      totalCompleted += completed
+      grandTotal += total
+    })
+    grandTotal = this.size / (this.size - unstarted) * grandTotal
+    return totalCompleted / grandTotal
   }
 
   _cancelAll () {

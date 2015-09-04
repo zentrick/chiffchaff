@@ -1,7 +1,7 @@
 {
-  "name": "chiffchaff-map",
+  "name": "chiffchaff-multi",
   "version": "0.0.3",
-  "description": "Aggregate task execution for chiffchaff.",
+  "description": "Multi-task execution for chiffchaff.",
   "keywords": [
     "async",
     "await",
@@ -57,10 +57,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/zentrick/chiffchaff-map"
+    "url": "git://github.com/zentrick/chiffchaff-multi"
   },
   "bugs": {
-    "url": "https://github.com/zentrick/chiffchaff-map"
+    "url": "https://github.com/zentrick/chiffchaff-multi"
   },
   "license": "MIT"
 }
