@@ -80,7 +80,7 @@ export default class MultiTask extends Task {
     this._progress = createProgressArray(this._tasks.length)
     this._index = 0
     const options = {concurrency: this._options.concurrency}
-    return Promise.map(this._weights, () => this._startOne(), options)
+    return Promise.map(this._progress, () => this._startOne(), options)
       .cancellable()
   }
 
@@ -127,7 +127,7 @@ export default class MultiTask extends Task {
 
   _reportProgress () {
     const total = this._options.ignoreWeights ?
-      this._computedAdaptiveProgress() :
+      this._computeAdaptiveProgress() :
       this._computeWeightedProgress()
     const pStr = JSON.stringify(this._progress)
     debug(`${this} progress: ${pStr}, weights: ${this._weights}, total: ${total}`)
