@@ -40,8 +40,16 @@ export default class SpawnTask extends Task {
     return this._command
   }
 
+  set command (command) {
+    this._command = command
+  }
+
   get args () {
     return this._args
+  }
+
+  set args (args) {
+    this._args = args
   }
 
   _start () {
