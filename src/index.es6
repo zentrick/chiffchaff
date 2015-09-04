@@ -19,6 +19,10 @@ export default class Task extends EventEmitter {
     return `${this.constructor.name}#${this._id}`
   }
 
+  get promise () {
+    return this._promise
+  }
+
   start () {
     debug(`Starting ${this}`)
     this.emit('start')
