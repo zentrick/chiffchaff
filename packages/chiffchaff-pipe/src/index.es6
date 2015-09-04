@@ -4,10 +4,11 @@ import Task from 'chiffchaff'
 import Promise from 'bluebird'
 
 export default class PipeTask extends Task {
-  constructor (source, destination) {
+  constructor (source, destination, options) {
     super()
     this._source = source
     this._destination = destination
+    this._options = options
   }
 
   set source (src) {
@@ -17,11 +18,11 @@ export default class PipeTask extends Task {
   _start () {
     return new Promise((resolve, reject) => {
       this._source
+        .once('end', resolve)
         .once('error', reject)
       this._destination
         .once('error', reject)
-      this._source.pipe(this._destination)
-        .once('finish', resolve)
+      this._source.pipe(this._destination, this._options)
         .once('error', reject)
     })
       .cancellable()
