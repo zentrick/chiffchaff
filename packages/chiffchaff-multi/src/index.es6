@@ -64,12 +64,14 @@ export default class MapTask extends Task {
 
   _start () {
     this._progress = createProgressArray(this._tasks.length)
+    this._index = 0
     return Promise.map(this._options.weights,
-      (_, idx) => this._startOne(idx),
+      () => this._startOne(),
       {concurrency: this._options.concurrency})
   }
 
-  _startOne (idx) {
+  _startOne () {
+    const idx = this._index++
     const task = this._getNext(idx)
     const promise = task.start()
     if (this._options.cancel && !promise.isCancellable()) {
