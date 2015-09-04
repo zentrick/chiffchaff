@@ -43,7 +43,6 @@ const createProgressArray = num => {
   return progress
 }
 
-// TODO Rename to chiffchaff-map
 export default class MapTask extends Task {
   constructor (tasks, options) {
     super()
