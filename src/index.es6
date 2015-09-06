@@ -12,7 +12,7 @@ export default class Task extends EventEmitter {
   constructor () {
     super()
     this._id = ++counter
-    this._swallowError = false
+    this._swallowCancellationError = false
   }
 
   get name () {
