@@ -28,26 +28,7 @@ export default class Task extends EventEmitter {
     this.emit('start')
     this._promise = this._start()
     return this._promise
-      .then(res => {
-        debug(`${this} completed`)
-        this.emit('done', res)
-        this.emit('end', null, res)
-        return res
-      })
-      .catch(err => {
-        if (err instanceof Promise.CancellationError) {
-          this.emit('cancel', null)
-          if (this._swallowCancellationError) {
-            debug(`Swallowing cancellation error from ${this}`)
-            this.emit('end', null, null)
-            return
-          }
-        }
-        debug(`Error from ${this}: ${err}`)
-        this.emit('fail', err)
-        this.emit('end', err, null)
-        throw err
-      })
+      .then(res => this._onResolve(res), err => this._onReject(err))
   }
 
   cancel (swallowError) {
@@ -58,6 +39,28 @@ export default class Task extends EventEmitter {
 
   _start () {
     throw new Error('Method is abstract')
+  }
+
+  _onResolve (res) {
+    debug(`${this} completed`)
+    this.emit('done', res)
+    this.emit('end', null, res)
+    return res
+  }
+
+  _onReject (err) {
+    if (err instanceof Promise.CancellationError) {
+      this.emit('cancel', null)
+      if (this._swallowCancellationError) {
+        debug(`Swallowing cancellation error from ${this}`)
+        this.emit('end', null, null)
+        return
+      }
+    }
+    debug(`Error from ${this}: ${err}`)
+    this.emit('fail', err)
+    this.emit('end', err, null)
+    throw err
   }
 
   _notify (completed, total) {
