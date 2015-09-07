@@ -54,10 +54,7 @@
     "prepublish": "npm run clean && npm run build",
     "test": "gulp test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/zentrick/chiffchaff-pipe"
-  },
+  "repository": "zentrick/chiffchaff-pipe",
   "bugs": {
     "url": "https://github.com/zentrick/chiffchaff-pipe/issues"
   },
