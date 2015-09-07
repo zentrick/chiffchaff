@@ -25,7 +25,8 @@
   "dependencies": {
     "babel-runtime": "^5.5.6",
     "bluebird": "^2.9.34",
-    "chiffchaff": "^0.0.1"
+    "chiffchaff": "^0.0.1",
+    "event-registry": "^0.0.2"
   },
   "devDependencies": {
     "babel": "^5.5.6",

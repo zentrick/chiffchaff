@@ -2,32 +2,7 @@
 
 import Task from 'chiffchaff'
 import Promise from 'bluebird'
-
-class ListenerManager {
-  constructor () {
-    this._listeners = []
-  }
-
-  once (emitter, event, listener) {
-    const wrapped = this._wrap(listener)
-    emitter.once(event, wrapped)
-    this._listeners.push({emitter, event, listener: wrapped})
-  }
-
-  _wrap (listener) {
-    return (...args) => {
-      listener.apply(null, args)
-      this._cleanUp()
-    }
-  }
-
-  _cleanUp () {
-    for (let {emitter, event, listener} of this._listeners) {
-      emitter.removeListener(event, listener)
-    }
-    this._listeners.length = 0
-  }
-}
+import EventRegistry from 'event-registry'
 
 export default class PipeTask extends Task {
   constructor (source, destination, options) {
@@ -43,12 +18,12 @@ export default class PipeTask extends Task {
 
   _start () {
     return new Promise((resolve, reject) => {
-      const mgr = new ListenerManager()
-      mgr.once(this._source, 'end', resolve)
-      mgr.once(this._source, 'error', reject)
-      mgr.once(this._destination, 'error', reject)
+      const reg = new EventRegistry()
+      reg.onceFin(this._source, 'end', resolve)
+      reg.onceFin(this._source, 'error', reject)
+      reg.onceFin(this._destination, 'error', reject)
       const pass = this._source.pipe(this._destination, this._options)
-      mgr.once(pass, 'error', reject)
+      reg.onceFin(pass, 'error', reject)
     })
       .cancellable()
       .catch(Promise.CancellationError, err => {
