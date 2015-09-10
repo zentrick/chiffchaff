@@ -25,7 +25,7 @@
   "dependencies": {
     "babel-runtime": "^5.5.6",
     "chiffchaff-multi": "^0.0.5",
-    "chiffchaff-pipe": "^0.0.5"
+    "chiffchaff-pipe": "^0.0.6"
   },
   "devDependencies": {
     "babel": "^5.5.6",
