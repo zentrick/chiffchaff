@@ -73,9 +73,9 @@ export default class MultiTask extends Task {
 
   _start () {
     if (!this._options.ignoreWeights) {
-      this._weights = Array.isArray(this._options.weights) ?
-        checkAndNormalizeWeights(this._options.weights, this.size) :
-        createDefaultWeights(this.size)
+      this._weights = Array.isArray(this._options.weights)
+        ? checkAndNormalizeWeights(this._options.weights, this.size)
+        : createDefaultWeights(this.size)
     }
     this._progress = createProgressArray(this.size)
     this._index = 0
@@ -107,8 +107,8 @@ export default class MultiTask extends Task {
   }
 
   _getNext (idx) {
-    return Array.isArray(this._tasks) ? this._tasks[idx] :
-      this._tasks.next().value
+    return Array.isArray(this._tasks) ? this._tasks[idx]
+      : this._tasks.next().value
   }
 
   _onComplete (idx) {
@@ -126,9 +126,9 @@ export default class MultiTask extends Task {
   }
 
   _reportProgress () {
-    const total = this._options.ignoreWeights ?
-      this._computeAdaptiveProgress() :
-      this._computeWeightedProgress()
+    const total = this._options.ignoreWeights
+      ? this._computeAdaptiveProgress()
+      : this._computeWeightedProgress()
     const pStr = JSON.stringify(this._progress)
     debug(`${this} progress: ${pStr}, weights: ${this._weights}, total: ${total}`)
     this._notify(total, 1)
@@ -165,8 +165,8 @@ export default class MultiTask extends Task {
   }
 
   toString () {
-    return this.name + (Array.isArray(this._tasks) ?
-      '<' + this._tasks.map(task => task.toString()).join(',') + '>' :
-      '[' + this.size + ']')
+    return this.name + (Array.isArray(this._tasks)
+      ? '<' + this._tasks.map(task => task.toString()).join(',') + '>'
+      : '[' + this.size + ']')
   }
 }
