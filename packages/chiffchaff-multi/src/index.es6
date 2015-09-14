@@ -44,7 +44,7 @@ const checkAndNormalizeWeights = (weights, count) => {
 }
 
 export default class MultiTask extends Task {
-  constructor (tasks, options) {
+  constructor (tasks = [], options = null) {
     super()
     this._tasks = tasks
     this._options = defaults(options, {
