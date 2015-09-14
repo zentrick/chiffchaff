@@ -4,7 +4,7 @@ import MultiTask from 'chiffchaff-multi'
 import PipeTask from 'chiffchaff-pipe'
 
 export default class ConcatTask extends MultiTask {
-  constructor (sources, destination) {
+  constructor (sources = [], destination = null) {
     super([], {ignoreWeights: true})
     this._sources = sources
     this._destination = destination
@@ -12,6 +12,10 @@ export default class ConcatTask extends MultiTask {
 
   addSource (source) {
     this._sources.push(source)
+  }
+
+  set destination (dest) {
+    this._destination = dest
   }
 
   _start () {
