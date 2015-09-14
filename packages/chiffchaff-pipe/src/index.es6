@@ -5,7 +5,7 @@ import Promise from 'bluebird'
 import EventRegistry from 'event-registry'
 
 export default class PipeTask extends Task {
-  constructor (source, destination, options) {
+  constructor (source = null, destination = null, options = null) {
     super()
     this._source = source
     this._destination = destination
@@ -14,6 +14,10 @@ export default class PipeTask extends Task {
 
   set source (src) {
     this._source = src
+  }
+
+  set destination (dest) {
+    this._destination = dest
   }
 
   _start () {
