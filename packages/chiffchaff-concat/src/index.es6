@@ -3,22 +3,21 @@
 import MultiTask from 'chiffchaff-multi'
 import PipeTask from 'chiffchaff-pipe'
 
-const generatePipeTasks = function * (sources, destination) {
-  for (let source of sources) {
-    yield new PipeTask(source, destination, {end: false})
-  }
-}
-
 export default class ConcatTask extends MultiTask {
-  constructor (sources, numSources, destination) {
-    super(generatePipeTasks(sources, destination), {
-      size: numSources,
-      ignoreWeights: true
-    })
+  constructor (sources, destination) {
+    super([], {ignoreWeights: true})
+    this._sources = sources
     this._destination = destination
   }
 
+  addSource (source) {
+    this._sources.push(source)
+  }
+
   _start () {
+    for (let source of this._sources) {
+      this.add(new PipeTask(source, this._destination), {end: false})
+    }
     return super._start()
       .then(() => this._destination.end())
   }
