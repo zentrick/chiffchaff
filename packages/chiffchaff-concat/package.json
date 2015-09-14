@@ -1,6 +1,6 @@
 {
   "name": "chiffchaff-concat",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Stream concatenation for chiffchaff.",
   "keywords": [
     "async",
