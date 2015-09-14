@@ -19,7 +19,7 @@ const createDefaultWeights = num => {
 const createProgressArray = num => {
   const progress = []
   for (let i = 0; i < num; ++i) {
-    progress.push({completed: 0, total: -1})
+    progress.push({done: false, completed: 0, total: -1})
   }
   return progress
 }
@@ -112,10 +112,7 @@ export default class MultiTask extends Task {
   }
 
   _onComplete (idx) {
-    if (this._progress[idx].total < 0) {
-      this._progress[idx].total = 0
-    }
-    this._progress[idx].completed = this._progress[idx].total
+    this._progress[idx].done = true
     this._reportProgress()
   }
 
@@ -136,8 +133,8 @@ export default class MultiTask extends Task {
 
   _computeWeightedProgress () {
     return this._progress.reduce(
-      (sum, {completed, total}, i) => {
-        const progress = (total > 0) ? completed / total : 0
+      (sum, {done, completed, total}, i) => {
+        const progress = (done ? 1 : (total > 0) ? completed / total : 0)
         return sum + this._weights[i] * progress
       }, 0)
   }
