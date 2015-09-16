@@ -20,7 +20,7 @@ export default class ConcatTask extends MultiTask {
 
   _start () {
     for (let source of this._sources) {
-      this.add(new PipeTask(source, this._destination), {end: false})
+      this.add(new PipeTask(source, this._destination, {end: false}))
     }
     return super._start()
       .then(() => this._destination.end())
