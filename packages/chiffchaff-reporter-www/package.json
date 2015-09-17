@@ -1,6 +1,6 @@
 {
   "name": "chiffchaff-reporter-www",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Live HTML-based reporting for chiffchaff.",
   "keywords": [
     "async",
