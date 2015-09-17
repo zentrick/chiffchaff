@@ -25,6 +25,10 @@ export default class ConcatTask extends MultiTask {
     this._destination = value
   }
 
+  get size () {
+    return super.size
+  }
+
   set size (value) {
     this.options.size = value
   }
