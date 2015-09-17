@@ -1,6 +1,6 @@
 {
   "name": "chiffchaff-multi",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Multi-task execution for chiffchaff.",
   "keywords": [
     "async",
