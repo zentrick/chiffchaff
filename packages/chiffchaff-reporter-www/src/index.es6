@@ -16,7 +16,6 @@ export default class WwwReporter extends Reporter {
     this._options = defaults(options, {port: 3000, updateInterval: 250})
     this._limiter = new Bottleneck(1, this._options.updateInterval)
     this._lastData = []
-    this._connections = []
     this._boundReport = this._scheduledReport.bind(this)
   }
 
@@ -34,10 +33,10 @@ export default class WwwReporter extends Reporter {
   }
 
   dispose () {
-    for (let socket of this._connections) {
-      socket.disconnect()
-    }
-    return Promise.promisify(this._server.close).call(this._server)
+    return new Promise(resolve => {
+      this._server.close()
+      resolve()
+    })
   }
 
   _scheduledReport () {
@@ -73,10 +72,6 @@ export default class WwwReporter extends Reporter {
   }
 
   _onConnection (socket) {
-    this._connections.push(socket)
-    socket.once('disconnect', () => {
-      this._connections.splice(this._connections.indexOf(socket), 1)
-    })
     socket.emit('init', this._lastData)
   }
 }
