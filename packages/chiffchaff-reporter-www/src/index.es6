@@ -51,20 +51,19 @@ export default class WwwReporter extends Reporter {
   _scheduledReport () {
     return new Promise(resolve => {
       this._io.emit('data', this._lastData)
-      if (this._disposed) {
-        this._completeDisposal()
-      }
       resolve()
-    })
+    }).then(() => this._disposed && this._completeDisposal())
   }
 
   _completeDisposal () {
     this._limiter.stopAll()
-    this._server.close()
+    const closing = Promise.promisify(this._server.close).call(this._server)
+    this._io.close()
     this._limiter = null
     this._app = null
     this._server = null
     this._io = null
+    return closing
   }
 
   _createApp () {
