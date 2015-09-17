@@ -15,6 +15,7 @@ export default class WwwReporter extends Reporter {
     super()
     this._options = defaults(options, {port: 3000, updateInterval: 250})
     this._lastData = []
+    this._disposed = false
     this._limiter = new Bottleneck(1, this._options.updateInterval)
     this._boundReport = this._scheduledReport.bind(this)
   }
@@ -28,32 +29,42 @@ export default class WwwReporter extends Reporter {
   }
 
   report (data) {
-    if (!this._lastData) {
+    if (this._disposed) {
       throw new Error('Reporter disposed')
     }
     this._lastData = data
-    this._limiter.schedule(this._boundReport)
+    this._scheduleReport()
   }
 
   dispose () {
     return new Promise(resolve => {
-      this._limiter = null
-      this._app = null
-      this._server.close()
-      this._server = null
-      this._lastData = null
-      this._io = null
+      this._disposed = true
+      this._scheduleReport()
       resolve()
     })
   }
 
+  _scheduleReport () {
+    this._limiter.schedule(this._boundReport)
+  }
+
   _scheduledReport () {
     return new Promise(resolve => {
-      if (this._lastData) {
-        this._io.emit('data', this._lastData)
+      this._io.emit('data', this._lastData)
+      if (this._disposed) {
+        this._completeDisposal()
       }
       resolve()
     })
+  }
+
+  _completeDisposal () {
+    this._limiter.stopAll()
+    this._server.close()
+    this._limiter = null
+    this._app = null
+    this._server = null
+    this._io = null
   }
 
   _createApp () {
