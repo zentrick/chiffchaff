@@ -2,26 +2,31 @@
 
 import MultiTask from 'chiffchaff-multi'
 import PipeTask from 'chiffchaff-pipe'
+import defaults from 'defaults'
+
+const toTaskIterator = (sources, destination) => (function * () {
+  for (let source of sources) {
+    yield new PipeTask(source, destination, {end: false})
+  }
+})()
 
 export default class ConcatTask extends MultiTask {
-  constructor (sources = [], destination = null) {
-    super([], {ignoreWeights: true})
+  constructor (sources = null, destination = null, options = null) {
+    super(null, defaults(options, {ignoreWeights: true, size: 0}))
     this._sources = sources
     this._destination = destination
   }
 
-  addSource (source) {
-    this._sources.push(source)
+  get destination () {
+    return this._destination
   }
 
-  set destination (dest) {
-    this._destination = dest
+  set destination (value) {
+    this._destination = value
   }
 
   _start () {
-    for (let source of this._sources) {
-      this.add(new PipeTask(source, this._destination, {end: false}))
-    }
+    this._tasks = toTaskIterator(this._sources, this._destination)
     return super._start()
       .then(() => this._destination.end())
   }
