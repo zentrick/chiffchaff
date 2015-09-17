@@ -25,6 +25,10 @@ export default class ConcatTask extends MultiTask {
     this._destination = value
   }
 
+  set size (value) {
+    this.options.size = value
+  }
+
   _start () {
     this._tasks = toTaskIterator(this._sources, this._destination)
     return super._start()
