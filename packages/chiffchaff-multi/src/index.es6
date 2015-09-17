@@ -91,14 +91,17 @@ export default class MultiTask extends Task {
     if (this._options.cancel && !promise.isCancellable()) {
       return Promise.reject(new Error(`Promise from ${task} is not cancellable`))
     }
-    task.on('progress', (compl, total) => this._setProgress(idx, compl, total))
+    const onProgress = (compl, total) => this._setProgress(idx, compl, total)
+    task.on('progress', onProgress)
     return promise
       .then(res => {
+        task.removeListener('progress', onProgress)
         this._onComplete(idx)
         return res
       })
       .catch(err => {
         debug(`Error from ${task}: ${err}`)
+        task.removeListener('progress', onProgress)
         if (this._options.cancel) {
           this._cancelAll()
         }
