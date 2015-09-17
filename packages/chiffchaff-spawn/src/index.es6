@@ -4,6 +4,7 @@ import _debug from 'debug'
 const debug = _debug('chiffchaff:SpawnTask')
 
 import Task from 'chiffchaff'
+import EventRegistry from 'event-registry'
 import defaults from 'defaults'
 import spawn from 'win-spawn'
 import Promise from 'bluebird'
@@ -26,6 +27,7 @@ export default class SpawnTask extends Task {
     this._stdout = new Buffer(0)
     this._stderr = new Buffer(0)
     this._piped = false
+    this._eventRegistry = new EventRegistry()
   }
 
   get source () {
@@ -75,23 +77,21 @@ export default class SpawnTask extends Task {
   }
 
   _addListeners () {
-    this._proc.once('close', code => this._onClose(code))
-    this._proc.once('error', err => this._onError(err))
+    this._eventRegistry.once(this._proc, 'close', code => this._onClose(code))
+    this._eventRegistry.once(this._proc, 'error', err => this._onError(err))
     if (this._options.captureStdout) {
-      this._proc.stdout.on('data', data => this._onStdout(data))
+      this._eventRegistry.on(this._proc.stdout, 'data', data => this._onStdout(data))
     }
     if (this._options.captureStderr) {
-      this._proc.stderr.on('data', data => this._onStderr(data))
+      this._eventRegistry.on(this._proc.stderr, 'data', data => this._onStderr(data))
     }
-    this._proc.stdin.once('error', err => this._onStdinError(err))
+    this._eventRegistry.on(this._proc.stdin, 'error', err => this._onStdinError(err))
   }
 
   _pipeSource () {
     if (this._source instanceof Stream) {
-      this._source
-        .on('error', err => this._onSourceError(err))
-        .pipe(this._proc.stdin)
-        .on('error', err => this._onPipeError(err))
+      this._eventRegistry.on(this._source, 'error', err => this._onSourceError(err))
+      this._source.pipe(this._proc.stdin)
       this._source.resume()
       this._piped = true
     }
@@ -107,12 +107,6 @@ export default class SpawnTask extends Task {
   _onSourceError (err) {
     debug(`Process ${this.command} source error: ${err}`)
     this.emit('sourceError', err)
-    this._unpipeSource()
-  }
-
-  _onPipeError (err) {
-    debug(`Process ${this.command} pipe error: ${err}`)
-    this.emit('pipeError', err)
     this._unpipeSource()
   }
 

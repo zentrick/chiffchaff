@@ -27,6 +27,7 @@
     "bluebird": "^2.9.34",
     "chiffchaff": "^0.0.1",
     "defaults": "^1.0.2",
+    "event-registry": "^0.0.3",
     "win-spawn": "^2.0.0"
   },
   "devDependencies": {
