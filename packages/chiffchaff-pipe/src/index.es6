@@ -26,8 +26,7 @@ export default class PipeTask extends Task {
       reg.onceFin(this._source, 'end', resolve)
       reg.onceFin(this._source, 'error', reject)
       reg.onceFin(this._destination, 'error', reject)
-      const pass = this._source.pipe(this._destination, this._options)
-      reg.onceFin(pass, 'error', reject)
+      this._source.pipe(this._destination, this._options)
     })
       .cancellable()
       .catch(Promise.CancellationError, err => {
