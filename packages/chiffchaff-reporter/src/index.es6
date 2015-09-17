@@ -1,5 +1,7 @@
 'use strict'
 
+import MultiTask from 'chiffchaff-multi'
+import EventRegistry from 'event-registry'
 import Node from './node'
 
 export default class Reporter {
@@ -9,21 +11,23 @@ export default class Reporter {
   }
 
   acceptTask (task) {
-    let node = null
-    task.on('start', () => {
+    const reg = new EventRegistry()
+    reg.once(task, 'start', () => {
       const parent = this._taskToParent.get(task) || this._tasks
-      node = parent.addChild(task)
-    })
-    task.on('progress', (completed, total) => {
-      node.setProgress(completed, total)
-      this._report()
-    })
-    task.on('end', (err, res) => {
-      node.markEnded(err)
-      this._report()
-    })
-    task.on('startOne', (subtask, index) => {
-      this._taskToParent.set(subtask, node)
+      const node = parent.addChild(task)
+      reg.on(task, 'progress', (completed, total) => {
+        node.setProgress(completed, total)
+        this._report()
+      })
+      if (task instanceof MultiTask) {
+        reg.on(task, 'startOne', (subtask, index) => {
+          this._taskToParent.set(subtask, node)
+        })
+      }
+      reg.onceFin(task, 'end', err => {
+        node.markEnded(err)
+        this._report()
+      })
     })
   }
 
