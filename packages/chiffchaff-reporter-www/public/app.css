@@ -1,0 +1,57 @@
+html, body {
+  background: #FFF;
+  color: #000;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  padding: 2em;
+}
+
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li li {
+  margin-left: 1em;
+}
+
+.bar-container {
+  width: 100%;
+  position: relative;
+  height: 2em;
+  background: #F0F0F0;
+  margin-bottom: 0.5em;
+}
+
+.bar {
+  height: 100%;
+}
+
+.bar-container, .bar {
+  border-radius: 0.33em;
+}
+
+.bar {
+  background: #6C6;
+}
+
+.error .bar {
+  background: #C66;
+}
+
+.name {
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
+}
+
+.progress {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+}
