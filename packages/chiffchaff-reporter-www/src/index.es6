@@ -2,6 +2,7 @@
 
 import Reporter from 'chiffchaff-reporter'
 import Promise from 'bluebird'
+import Bottleneck from 'bottleneck'
 import express from 'express'
 import socketIo from 'socket.io'
 import defaults from 'defaults'
@@ -12,8 +13,10 @@ import http from 'http'
 export default class WwwReporter extends Reporter {
   constructor (options) {
     super()
-    this._options = defaults(options, {port: 3000})
+    this._options = defaults(options, {port: 3000, updateInterval: 250})
+    this._limiter = new Bottleneck(1, this._options.updateInterval)
     this._lastData = []
+    this._boundReport = this._scheduledReport.bind(this)
   }
 
   start () {
@@ -26,11 +29,16 @@ export default class WwwReporter extends Reporter {
 
   report (data) {
     this._lastData = data
-    this._io.emit('data', data)
+    this._limiter.schedule(this._boundReport)
   }
 
   dispose () {
     return Promise.promisify(this._server.close).call(this._server)
+  }
+
+  _scheduledReport () {
+    this._io.emit('data', this._lastData)
+    return Promise.resolve()
   }
 
   _createApp () {
