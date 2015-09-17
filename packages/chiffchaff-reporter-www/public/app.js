@@ -2,6 +2,7 @@
   'use strict'
 
   var RELATIVE = true
+  var PLACEHOLDER_TEXT = 'Pending'
 
   var $ = globals.jQuery
   var io = globals.io
@@ -31,25 +32,36 @@
       .append($('<div class="progress">').text(progress))
   }
 
-  var walkData = function (data, $ul) {
+  var createPlaceholder = function () {
+    return $('<div class="bar-container placeholder">')
+      .append($('<div class="placeholder-text">').text(PLACEHOLDER_TEXT))
+  }
+
+  var walkData = function (data, size, $ul) {
     if (!data.length) {
       return
     }
-    for (var i = 0; i < data.length; ++i) {
+    for (var i = 0; i < size; ++i) {
       var node = data[i]
-      var $bar = createProgressBar(node, $li)
-      var $li = $('<li>').append($bar)
+      var $li = $('<li>')
+      if (node) {
+        createProgressBar(node).appendTo($li)
+      } else {
+        createPlaceholder().appendTo($li)
+      }
       $ul.append($li)
-      if (node.children) {
+      if (node && node.children) {
         var $childUl = $('<ul>').appendTo($li)
-        walkData(node.children, $childUl)
+        var childrenSize = node.hasOwnProperty('size') ? node.size
+          : node.children.length
+        walkData(node.children, childrenSize, $childUl)
       }
     }
   }
 
   var onData = function (data) {
     $container.empty()
-    walkData(data, $container)
+    walkData(data, data.length, $container)
   }
 
   socket.on('init', function (data) {

@@ -26,6 +26,12 @@ li li {
   height: 2em;
   background: #F0F0F0;
   margin-bottom: 0.5em;
+  box-sizing: border-box;
+}
+
+.placeholder {
+  border: 2px solid #F0F0F0;
+  background: transparent;
 }
 
 .bar {
@@ -44,7 +50,7 @@ li li {
   background: #C66;
 }
 
-.name {
+.name, .placeholder-text {
   position: absolute;
   top: 0.5em;
   left: 0.5em;
@@ -54,4 +60,11 @@ li li {
   position: absolute;
   top: 0.5em;
   right: 0.5em;
+}
+
+.placeholder-text {
+  text-transform: uppercase;
+  font-size: 80%;
+  top: 0.6em;
+  color: #C0C0C0;
 }
