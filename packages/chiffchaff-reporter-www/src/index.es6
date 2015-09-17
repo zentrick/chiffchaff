@@ -9,7 +9,7 @@ import open from 'open'
 import path from 'path'
 import http from 'http'
 
-export default class WWWReporter extends Reporter {
+export default class WwwReporter extends Reporter {
   constructor (options) {
     super()
     this._options = defaults(options, {port: 3000})
