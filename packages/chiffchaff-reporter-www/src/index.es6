@@ -57,13 +57,11 @@ export default class WwwReporter extends Reporter {
 
   _completeDisposal () {
     this._limiter.stopAll()
-    const closing = Promise.promisify(this._server.close).call(this._server)
     this._io.close()
     this._limiter = null
     this._app = null
     this._server = null
     this._io = null
-    return closing
   }
 
   _createApp () {
