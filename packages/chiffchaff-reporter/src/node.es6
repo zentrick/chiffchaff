@@ -1,5 +1,7 @@
 'use strict'
 
+import MultiTask from 'chiffchaff-multi'
+
 export default class Node {
   constructor (task) {
     this._task = task
@@ -46,6 +48,9 @@ export default class Node {
     const obj = {total: this._total}
     if (this._task) {
       obj.name = this._task.name
+      if (this._task instanceof MultiTask) {
+        obj.size = this._task.size
+      }
     }
     if (this._ended) {
       obj.ended = true
