@@ -13,6 +13,13 @@ export default class Task extends EventEmitter {
     super()
     this._id = ++counter
     this._swallowCancellationError = false
+    if (Task._reporter) {
+      Task._reporter.acceptTask(this)
+    }
+  }
+
+  static set reporter (value) {
+    Task._reporter = value
   }
 
   get name () {
