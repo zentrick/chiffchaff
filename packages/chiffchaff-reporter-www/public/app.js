@@ -1,9 +1,10 @@
-/* global $, io */
-
 (function (globals) {
   'use strict'
 
   var RELATIVE = true
+
+  var $ = globals.jQuery
+  var io = globals.io
 
   var socket = io()
   var $container = $('<ul class="main">')
