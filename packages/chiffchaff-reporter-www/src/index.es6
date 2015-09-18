@@ -13,7 +13,11 @@ import http from 'http'
 export default class WwwReporter extends Reporter {
   constructor (options) {
     super()
-    this._options = defaults(options, {port: 3000, updateInterval: 250})
+    this._options = defaults(options, {
+      hostname: '127.0.0.1',
+      port: 0,
+      updateInterval: 250
+    })
     this._lastData = []
     this._disposed = false
     this._limiter = new Bottleneck(1, this._options.updateInterval)
@@ -80,11 +84,13 @@ export default class WwwReporter extends Reporter {
   }
 
   _listen () {
-    return Promise.promisify(this._server.listen).call(this._server, this._options.port)
+    return Promise.promisify(this._server.listen).call(this._server,
+      this._options.port, this._options.hostname)
   }
 
   _openBrowser () {
-    open(`http://localhost:${this._options.port}/`)
+    const port = this._server.address().port
+    open(`http://127.0.0.1:${port}/`)
   }
 
   _waitForConnection () {
