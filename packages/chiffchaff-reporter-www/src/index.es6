@@ -16,9 +16,11 @@ export default class WwwReporter extends Reporter {
     this._options = defaults(options, {
       hostname: '127.0.0.1',
       port: 0,
-      updateInterval: 250
+      updateInterval: 250,
+      closeTimeout: 500
     })
     this._lastData = []
+    this._connections = []
     this._disposed = false
     this._limiter = new Bottleneck(1, this._options.updateInterval)
     this._boundReport = this._scheduledReport.bind(this)
@@ -60,13 +62,28 @@ export default class WwwReporter extends Reporter {
   }
 
   _completeDisposal () {
-    this._limiter.stopAll()
-    this._io.emit('end')
-    this._io.close()
-    this._limiter = null
-    this._app = null
-    this._server = null
-    this._io = null
+    return new Promise(resolve => {
+      this._limiter.stopAll()
+      this._io.emit('end')
+      this._io.close()
+      this._server.close()
+      resolve()
+    })
+      .delay(this._options.closeTimeout)
+      .then(() => {
+        this._closeAllConnections()
+        this._limiter = null
+        this._app = null
+        this._server = null
+        this._io = null
+      })
+  }
+
+  _closeAllConnections () {
+    for (let conn of this._connections) {
+      conn.destroy()
+    }
+    this._connections.length = 0
   }
 
   _createApp () {
@@ -77,6 +94,16 @@ export default class WwwReporter extends Reporter {
 
   _createServer () {
     this._server = http.Server(this._app)
+    this._server.on('connection', conn => {
+      this._connections.push(conn)
+      conn.on('close', () => {
+        conn.destroy()
+        const idx = this._connections.indexOf(conn)
+        if (idx >= 0) {
+          this._connections.splice(idx, 1)
+        }
+      })
+    })
   }
 
   _createIo () {
