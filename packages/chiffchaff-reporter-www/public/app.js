@@ -65,9 +65,18 @@
   }
 
   socket.on('init', function (data) {
+    console.info('Got init event, processing data:', data)
     init()
     onData(data)
   })
 
-  socket.on('data', onData)
+  socket.on('data', function (data) {
+    console.info('Got data:', data)
+    onData(data)
+  })
+
+  socket.on('end', function () {
+    console.info('Got end event, disconnecting ...')
+    socket.close()
+  })
 })(this)

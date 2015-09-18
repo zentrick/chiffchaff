@@ -61,6 +61,7 @@ export default class WwwReporter extends Reporter {
 
   _completeDisposal () {
     this._limiter.stopAll()
+    this._io.emit('end')
     this._io.close()
     this._limiter = null
     this._app = null
@@ -79,7 +80,7 @@ export default class WwwReporter extends Reporter {
   }
 
   _createIo () {
-    this._io = socketIo(this._server)
+    this._io = socketIo(this._server, {serveClient: false})
     this._io.on('connection', socket => this._onConnection(socket))
   }
 
