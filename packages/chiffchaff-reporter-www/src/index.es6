@@ -3,6 +3,7 @@
 import Reporter from 'chiffchaff-reporter'
 import Promise from 'bluebird'
 import Bottleneck from 'bottleneck'
+import EventRegistry from 'event-registry'
 import express from 'express'
 import socketIo from 'socket.io'
 import defaults from 'defaults'
@@ -24,6 +25,7 @@ export default class WwwReporter extends Reporter {
     this._disposed = false
     this._limiter = new Bottleneck(1, this._options.updateInterval)
     this._boundReport = this._scheduledReport.bind(this)
+    this._events = new EventRegistry()
   }
 
   start () {
@@ -67,6 +69,7 @@ export default class WwwReporter extends Reporter {
       this._io.emit('end')
       this._io.close()
       this._server.close()
+      this._events.clear()
       resolve()
     })
       .delay(this._options.closeTimeout)
@@ -76,6 +79,7 @@ export default class WwwReporter extends Reporter {
         this._app = null
         this._server = null
         this._io = null
+        this._events = null
       })
   }
 
@@ -94,21 +98,16 @@ export default class WwwReporter extends Reporter {
 
   _createServer () {
     this._server = http.Server(this._app)
-    this._server.on('connection', conn => {
+    this._events.on(this._server, 'connection', conn => {
       this._connections.push(conn)
-      conn.on('close', () => {
-        conn.destroy()
-        const idx = this._connections.indexOf(conn)
-        if (idx >= 0) {
-          this._connections.splice(idx, 1)
-        }
-      })
+      this._events.once(conn, 'close', () => this._onClose(conn))
     })
   }
 
   _createIo () {
     this._io = socketIo(this._server, {serveClient: false})
-    this._io.on('connection', socket => this._onConnection(socket))
+    this._events.on(this._io.sockets, 'connection',
+      socket => this._onConnection(socket))
   }
 
   _listen () {
@@ -127,5 +126,13 @@ export default class WwwReporter extends Reporter {
 
   _onConnection (socket) {
     socket.emit('init', this._lastData)
+  }
+
+  _onClose (conn) {
+    conn.destroy()
+    const idx = this._connections.indexOf(conn)
+    if (idx >= 0) {
+      this._connections.splice(idx, 1)
+    }
   }
 }
