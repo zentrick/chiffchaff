@@ -1,0 +1,7 @@
+{
+  "name": "chiffchaff-reporter-www",
+  "private": true,
+  "dependencies": {
+    "faviconx": "~1.0.1"
+  }
+}
