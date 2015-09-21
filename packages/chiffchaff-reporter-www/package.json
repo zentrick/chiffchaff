@@ -26,6 +26,7 @@
     "babel-runtime": "^5.5.6",
     "bluebird": "^2.9.34",
     "bottleneck": "^1.9.1",
+    "bower": "^1.5.2",
     "chiffchaff-reporter": "^0.1.0",
     "defaults": "^1.0.2",
     "event-registry": "^0.2.0",
@@ -52,11 +53,13 @@
   },
   "main": "dist/index.js",
   "files": [
+    "bower.json",
     "public/",
     "dist/",
     "index.js"
   ],
   "scripts": {
+    "postinstall": "bower install",
     "clean": "gulp clean",
     "build": "gulp build",
     "prepublish": "npm run clean && npm run build",
