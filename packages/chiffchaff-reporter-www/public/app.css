@@ -46,8 +46,12 @@ li li {
   background: #6C6;
 }
 
-.error .bar {
+.error {
   background: #F66;
+}
+
+.error .bar {
+  display: none;
 }
 
 .name, .placeholder-text {

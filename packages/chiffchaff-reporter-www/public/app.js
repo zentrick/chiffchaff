@@ -3,7 +3,6 @@
 
   var RELATIVE = true
   var PLACEHOLDER_TEXT = 'Pending'
-  var TITLE_PREFIX = document.title + ' ' + String.fromCharCode(8211) + ' '
 
   var $ = globals.jQuery
   var io = globals.io
@@ -17,7 +16,9 @@
   }
 
   var getProgressRate = function (node) {
-    return node.ended ? 1 : (node.total > 0) ? node.completed / node.total : 0
+    return node.ended ? (node.error ? 0 : 1)
+      : (node.total > 0) ? node.completed / node.total
+      : 0
   }
 
   var createProgressBar = function (node) {
@@ -63,7 +64,6 @@
       return sum + getProgressRate(curr)
     }, 0) / data.length
     var perc = Math.floor(totalProgress * 100)
-    document.title = TITLE_PREFIX + perc + '%'
     globals.FavIconX.setValue(perc)
   }
 
