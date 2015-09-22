@@ -84,7 +84,7 @@ class DownloadTask extends Task {
     })
       .cancellable()
       .catch(Promise.CancellationError, err => {
-        // If the task get cancelled, abort the underlying HTTP request.
+        // If the task gets cancelled, abort the underlying HTTP request.
         this._request.abort()
         throw err
       })
