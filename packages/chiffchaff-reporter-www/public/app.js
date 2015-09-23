@@ -59,10 +59,17 @@
     }
   }
 
-  var updateTitle = function (data) {
-    var totalProgress = data.reduce(function (sum, curr) {
+  var calculateTotalProgress = function (data) {
+    if (!data.length) {
+      return 0
+    }
+    return data.reduce(function (sum, curr) {
       return sum + getProgressRate(curr)
     }, 0) / data.length
+  }
+
+  var updateTitle = function (data) {
+    var totalProgress = calculateTotalProgress(data)
     var perc = Math.floor(totalProgress * 100)
     globals.FavIconX.setValue(perc)
   }
