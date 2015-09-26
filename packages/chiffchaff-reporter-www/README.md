@@ -4,6 +4,20 @@
 
 Live HTML-based reporting for chiffchaff.
 
+## Usage
+
+```js
+import Task from 'chiffchaff'
+import WwwReporter from 'chiffchaff-reporter-www'
+
+const reporter = new WwwReporter()
+Task.reporter = reporter
+reporter.start()
+  .then(() => {
+    // Start some tasks and watch the magic happen.
+  })
+```
+
 ## Maintainer
 
 [Tim De Pauw](https://github.com/timdp)
