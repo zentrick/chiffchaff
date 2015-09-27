@@ -4,6 +4,8 @@
 
 Live HTML-based reporting for chiffchaff.
 
+![Preview](preview.png)
+
 ## Usage
 
 ```js
