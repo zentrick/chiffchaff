@@ -4,7 +4,9 @@
 
 Live HTML-based reporting for chiffchaff.
 
-![Preview](preview.png)
+## Preview
+
+![Preview](https://rawgit.com/zentrick/chiffchaff-reporter-www/master/preview.svg)
 
 ## Usage
 

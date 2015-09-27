@@ -57,7 +57,7 @@
     "public/",
     "dist/",
     "index.js",
-    "preview.png"
+    "preview.svg"
   ],
   "scripts": {
     "postinstall": "bower install",
