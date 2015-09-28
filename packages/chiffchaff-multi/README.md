@@ -68,7 +68,7 @@ cancellableTwoInParallelDownloadTask.start()
   .catch(err => console.error('Error: %s', err))
 ```
 
-One of chiffchaff's main features is its built-in progress reporting.
+Another one of chiffchaff's strengths is its built-in progress reporting.
 `MultiTask` is no different. Just like with an individual `DownloadTask`, we can
 subscribe to updates from the compound download task by listening for the
 `progress` event.
