@@ -7,6 +7,8 @@ import Task from 'chiffchaff'
 import Promise from 'bluebird'
 import defaults from 'defaults'
 
+Promise.config({cancellation: true})
+
 const createDefaultWeights = num => {
   const weight = 1 / num
   const weights = []
@@ -71,6 +73,15 @@ export default class MultiTask extends Task {
     this._tasks.push(task)
   }
 
+  isCancelled () {
+    for (let task of this._tasks) {
+      if (task.isCancelled()) {
+        return true
+      }
+    }
+    return false
+  }
+
   _start () {
     if (!this._options.ignoreWeights) {
       this._weights = Array.isArray(this._options.weights)
@@ -81,7 +92,6 @@ export default class MultiTask extends Task {
     this._index = 0
     const options = {concurrency: this._options.concurrency}
     return Promise.map(this._progress, () => this._startOne(), options)
-      .cancellable()
   }
 
   _startOne () {
@@ -89,11 +99,6 @@ export default class MultiTask extends Task {
     const task = this._getNext(idx)
     this.emit('startOne', task, idx)
     const promise = task.start()
-    if (this._options.cancel && !promise.isCancellable()) {
-      const err = new Error(`Promise from ${task} is not cancellable`)
-      this.emit('endOne', task, idx, err)
-      return Promise.reject(err)
-    }
     const onProgress = (compl, total) => this._setProgress(idx, compl, total)
     task.on('progress', onProgress)
     return promise
