@@ -73,15 +73,6 @@ export default class MultiTask extends Task {
     this._tasks.push(task)
   }
 
-  isCancelled () {
-    for (let task of this._tasks) {
-      if (task.isCancelled()) {
-        return true
-      }
-    }
-    return false
-  }
-
   _start () {
     if (!this._options.ignoreWeights) {
       this._weights = Array.isArray(this._options.weights)
