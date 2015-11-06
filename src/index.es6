@@ -50,7 +50,7 @@ export default class Task extends EventEmitter {
   }
 
   isCancelled () {
-    return this._promise.isCancelled()
+    return (this._promise && this._promise.isCancelled())
   }
 
   _start () {
