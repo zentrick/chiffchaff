@@ -10,6 +10,8 @@ import spawn from 'win-spawn'
 import Promise from 'bluebird'
 import {Stream} from 'stream'
 
+Promise.config({cancellation: true})
+
 const toBuffer = data => (typeof data === 'string') ? new Buffer(data) : data
 
 export default class SpawnTask extends Task {
@@ -55,18 +57,14 @@ export default class SpawnTask extends Task {
   }
 
   _start () {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject, onCancel) => {
       this._resolve = resolve
       this._reject = reject
       this._runCommand()
       this._addListeners()
       this._pipeSource()
+      onCancel(() => debug(`Process ${this.command} cancelled`))
     })
-      .cancellable()
-      .catch(Promise.CancellationError, err => {
-        debug(`Process ${this.command} cancelled`)
-        throw err
-      })
   }
 
   _runCommand () {
