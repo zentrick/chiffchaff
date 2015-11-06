@@ -3,10 +3,8 @@ const plugins = require('gulp-load-plugins')()
 const isparta = require('isparta')
 const del = require('del')
 const mkdirp = require('mkdirp')
-const path = require('path')
 
-const pkg = require('./package.json')
-const dest = path.dirname(pkg.main)
+const dest = 'dist'
 
 const plumb = function () {
   return plugins.plumber({
@@ -22,7 +20,10 @@ gulp.task('build', ['test'], function () {
   mkdirp.sync(dest)
   return gulp.src('src/**/*.es6')
     .pipe(plumb())
-    .pipe(plugins.babel({optional: ['runtime']}))
+    .pipe(plugins.babel({
+      presets: ['es2015'],
+      plugins: ['transform-runtime']
+    }))
     .pipe(gulp.dest(dest))
 })
 
@@ -32,7 +33,7 @@ const test = function () {
     .pipe(plugins.mocha({reporter: 'dot'}))
 }
 
-require('babel/register')({extensions: ['.es6']})
+require('babel-core/register')({presets: ['es2015']})
 
 gulp.task('coverage', function (done) {
   gulp.src(['src/**/*.es6'])
