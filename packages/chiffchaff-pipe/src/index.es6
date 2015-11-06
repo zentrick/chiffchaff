@@ -4,6 +4,8 @@ import Task from 'chiffchaff'
 import Promise from 'bluebird'
 import EventRegistry from 'event-registry'
 
+Promise.config({cancellation: true})
+
 export default class PipeTask extends Task {
   constructor (source = null, destination = null, options = null) {
     super()
@@ -21,17 +23,13 @@ export default class PipeTask extends Task {
   }
 
   _start () {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject, onCancel) => {
       const reg = new EventRegistry()
       reg.onceFin(this._source, 'end', resolve)
       reg.onceFin(this._source, 'error', reject)
       reg.onceFin(this._destination, 'error', reject)
       this._source.pipe(this._destination, this._options)
+      onCancel(() => this._source.unpipe(this._destination))
     })
-      .cancellable()
-      .catch(Promise.CancellationError, err => {
-        this._source.unpipe(this._destination)
-        throw err
-      })
   }
 }
