@@ -6,13 +6,14 @@ const debug = _debug('chiffchaff:Task')
 import Promise from 'bluebird'
 import {EventEmitter} from 'events'
 
+Promise.config({cancellation: true})
+
 let counter = 0
 
 export default class Task extends EventEmitter {
   constructor () {
     super()
     this._id = ++counter
-    this._swallowCancellationError = false
     if (Task._reporter) {
       Task._reporter.acceptTask(this)
     }
@@ -36,12 +37,16 @@ export default class Task extends EventEmitter {
     this._promise = this._start()
     return this._promise
       .then(res => this._onResolve(res), err => this._onReject(err))
+      .finally(() => this._finally())
   }
 
-  cancel (swallowError) {
+  cancel () {
     debug(`Cancelling ${this}`)
-    this._swallowCancellationError = swallowError
     this._promise.cancel()
+  }
+
+  isCancelled () {
+    return this._promise.isCancelled()
   }
 
   _start () {
@@ -56,21 +61,25 @@ export default class Task extends EventEmitter {
   }
 
   _onReject (err) {
-    if (err instanceof Promise.CancellationError) {
-      this.emit('cancel', null)
-      if (this._swallowCancellationError) {
-        debug(`Swallowing cancellation error from ${this}`)
-        this.emit('end', null, null)
-        return
-      }
-    }
     debug(`Error from ${this}: ${err}`)
     this.emit('fail', err)
     this.emit('end', err, null)
     throw err
   }
 
+  _finally () {
+    if (this._promise.isCancelled()) {
+      debug(`${this} cancelled`)
+      this.emit('cancel', null)
+      this.emit('end', null, null)
+    }
+  }
+
   _notify (completed, total) {
+    if (!this._promise || !this._promise.isPending()) {
+      debug(`Ignoring progress while ${this} not pending: ${completed}/${total}`)
+      return
+    }
     if (typeof total !== 'number' || isNaN(total) || total <= 0 ||
         typeof completed !== 'number' || isNaN(completed) || completed < 0 ||
         completed > total) {

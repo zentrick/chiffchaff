@@ -31,20 +31,23 @@ videoDownloadTask
 
 A `Task` will not carry out any work until its `start` function is called. That
 one returns a
-[cancellable promise](https://github.com/petkaantonov/bluebird/blob/master/API.md#cancellation)
+[cancellable promise](http://bluebirdjs.com/docs/api/cancellation.html)
 which will be fulfilled with the result of the task. Hence, we start our
 download task as follows:
 
 ```js
 videoDownloadTask.start()
   .then(result => console.info('Download complete: %d bytes', result.length))
-  .catch(Promise.CancellationError, () => console.warn('Download cancelled'))
   .catch(err => console.error('Error: %s', err))
+  .finally(() => {
+    if (videoDownloadTask.isCancelled()) {
+      console.warn('Download cancelled')
+    }
+  })
 ```
 
 Let's say that after a second, we change our mind and want to cancel the
-download. It's as simple as calling `cancel` on the task, which will make it
-throw a `CancellationError` internally.
+download. It's as simple as calling `cancel` on the task.
 
 ```js
 setTimeout(() => {
@@ -62,6 +65,9 @@ import Task from 'chiffchaff'
 import Promise from 'bluebird'
 import http from 'http'
 
+// Don't forget to enable Bluebird's cancellation feature
+Promise.config({cancellation: true})
+
 class DownloadTask extends Task {
   constructor (url) {
     super()
@@ -75,19 +81,15 @@ class DownloadTask extends Task {
   // Subclasses of Task must only override the _start function. It returns a
   // cancellable promise for the work which the task is carrying out.
   _start () {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject, onCancel) => {
       // Hold on to the callbacks so we can use them below.
       this._resolve = resolve
       this._reject = reject
       this._request = http.get(this._url, res => this._onResponse(res))
         .once('error', err => reject(err))
+      // If the task gets cancelled, abort the underlying HTTP request.
+      onCancel(() => this._request.abort())
     })
-      .cancellable()
-      .catch(Promise.CancellationError, err => {
-        // If the task gets cancelled, abort the underlying HTTP request.
-        this._request.abort()
-        throw err
-      })
   }
 
   _onResponse (response) {
