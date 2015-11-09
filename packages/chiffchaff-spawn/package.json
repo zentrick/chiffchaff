@@ -1,6 +1,6 @@
 {
   "name": "chiffchaff-spawn",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Process spawning for chiffchaff.",
   "keywords": [
     "async",
