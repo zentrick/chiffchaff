@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.0.14",
-    "chiffchaff-multi": "^0.3.0",
+    "chiffchaff-multi": "^0.4.0",
     "event-registry": "^0.2.0"
   },
   "devDependencies": {
