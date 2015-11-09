@@ -2,7 +2,8 @@
 
 [![npm](https://img.shields.io/npm/v/chiffchaff.svg)](https://www.npmjs.com/package/chiffchaff) [![Dependencies](https://img.shields.io/david/zentrick/chiffchaff.svg)](https://david-dm.org/zentrick/chiffchaff) [![Build Status](https://img.shields.io/travis/zentrick/chiffchaff.svg)](https://travis-ci.org/zentrick/chiffchaff) [![Coverage Status](https://img.shields.io/coveralls/zentrick/chiffchaff.svg)](https://coveralls.io/r/zentrick/chiffchaff) [![JavaScript Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
 
-Cancellable promises with progress reporting.
+Cancellable promises with progress reporting. A more object-oriented approach to
+using [bluebird](http://bluebirdjs.com/).
 
 ## Example
 
@@ -60,13 +61,13 @@ Now that we've established the `DownloadTask` API, let's actually implement the
 class. As you may already have guessed, it's essentially a wrapper for Node's
 [`http.get`](https://nodejs.org/api/http.html#http_http_get_options_callback).
 
-```js
-import Task from 'chiffchaff'
-import Promise from 'bluebird'
-import http from 'http'
+To avoid having to enable bluebird's cancellation feature manually, chiffchaff
+exports a preconfigured `Promise` alongside its own `Task`. You can also access
+it as `require('chiffchaff').Promise` if you prefer CommonJS.
 
-// Don't forget to enable Bluebird's cancellation feature
-Promise.config({cancellation: true})
+```js
+import {default as Task, Promise} from 'chiffchaff'
+import http from 'http'
 
 class DownloadTask extends Task {
   constructor (url) {

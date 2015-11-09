@@ -96,3 +96,5 @@ export default class Task extends EventEmitter {
     return this.name
   }
 }
+
+export {Promise}
