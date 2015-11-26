@@ -1,6 +1,6 @@
 {
   "name": "chiffchaff-pipe",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Stream piping for chiffchaff.",
   "keywords": [
     "async",
