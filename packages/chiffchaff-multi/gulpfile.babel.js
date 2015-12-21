@@ -2,11 +2,10 @@
 
 import gulp from 'gulp'
 import loadPlugins from 'gulp-load-plugins'
-import isparta from 'isparta'
+import {Instrumenter} from 'isparta'
 import del from 'del'
 import mkdirp from 'mkdirp'
 import seq from 'run-sequence'
-import babelRegister from 'babel-core/register'
 
 const DEST = 'lib'
 
@@ -34,13 +33,11 @@ gulp.task('build', ['test'], () => {
 
 gulp.task('cleanbuild', cb => seq('clean', 'build', cb))
 
-babelRegister()
-
 gulp.task('coverage', cb => {
-  gulp.src(['src/**/*.js'])
+  gulp.src('src/**/*.js')
     .pipe(plumb())
-    .pipe($.istanbul({instrumenter: isparta.Instrumenter}))
-    .pipe($.istanbul.hookRequire({extensions: ['.js']}))
+    .pipe($.istanbul({instrumenter: Instrumenter}))
+    .pipe($.istanbul.hookRequire())
     .on('finish', () => test().pipe($.istanbul.writeReports()).on('end', cb))
 })
 
@@ -52,6 +49,6 @@ gulp.task('coveralls', ['coverage'], () => {
 
 gulp.task('test', test)
 
-gulp.task('watch', () => gulp.watch(['{src,test}/**/*'], ['cleanbuild']))
+gulp.task('watch', () => gulp.watch('{src,test}/**/*', ['cleanbuild']))
 
 gulp.task('default', ['cleanbuild'], () => gulp.start('watch'))
