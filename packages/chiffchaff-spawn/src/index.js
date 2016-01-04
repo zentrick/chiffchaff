@@ -6,7 +6,7 @@ const debug = _debug('chiffchaff:SpawnTask')
 import Task from 'chiffchaff'
 import EventRegistry from 'event-registry'
 import defaults from 'defaults'
-import spawn from 'win-spawn'
+import spawn from 'cross-spawn-async'
 import Promise from 'bluebird'
 import {Stream} from 'stream'
 
