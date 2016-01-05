@@ -61,7 +61,7 @@ export default class Node {
       obj.completed = this._completed
     }
     const children = []
-    for (let child of this._children.values()) {
+    for (const child of this._children.values()) {
       children.push(child.toJson())
     }
     if (children.length) {
