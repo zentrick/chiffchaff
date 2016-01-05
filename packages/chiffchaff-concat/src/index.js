@@ -5,7 +5,7 @@ import PipeTask from 'chiffchaff-pipe'
 import defaults from 'defaults'
 
 const toTaskIterator = (sources, destination) => (function * () {
-  for (let source of sources) {
+  for (const source of sources) {
     yield new PipeTask(source, destination, {end: false})
   }
 })()
