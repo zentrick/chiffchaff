@@ -84,7 +84,7 @@ export default class WwwReporter extends Reporter {
   }
 
   _closeAllConnections () {
-    for (let conn of this._connections) {
+    for (const conn of this._connections) {
       conn.destroy()
     }
     this._connections.length = 0
