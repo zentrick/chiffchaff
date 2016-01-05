@@ -33,7 +33,7 @@ const checkAndNormalizeWeights = (weights, count) => {
   if (count === 0) {
     return weights
   }
-  for (let w of weights) {
+  for (const w of weights) {
     if (typeof w !== 'number' || isNaN(w) || w < 0) {
       throw new Error(`Invalid weight: ${w}`)
     }
