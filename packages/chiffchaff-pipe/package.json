@@ -26,7 +26,7 @@
     "babel-runtime": "^6.3.19",
     "bluebird": "^3.0.5",
     "chiffchaff": "^0.2.0",
-    "event-registry": "^0.2.0"
+    "event-registry": "^0.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.3.21",
