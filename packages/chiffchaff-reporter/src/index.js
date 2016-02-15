@@ -24,7 +24,7 @@ export default class Reporter {
           this._taskToParent.set(subtask, node)
         })
       }
-      reg.onceFin(task, 'end', err => {
+      reg.onceFin(task, 'end', (err) => {
         node.markEnded(err)
         this._report()
       })
