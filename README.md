@@ -38,8 +38,8 @@ download task as follows:
 
 ```js
 videoDownloadTask.start()
-  .then(result => console.info('Download complete: %d bytes', result.length))
-  .catch(err => console.error('Error: %s', err))
+  .then((result) => console.info('Download complete: %d bytes', result.length))
+  .catch((err) => console.error('Error: %s', err))
   .finally(() => {
     if (videoDownloadTask.isCancelled()) {
       console.warn('Download cancelled')
@@ -86,8 +86,8 @@ class DownloadTask extends Task {
       // Hold on to the callbacks so we can use them below.
       this._resolve = resolve
       this._reject = reject
-      this._request = http.get(this._url, res => this._onResponse(res))
-        .once('error', err => reject(err))
+      this._request = http.get(this._url, (res) => this._onResponse(res))
+        .once('error', (err) => reject(err))
       // If the task gets cancelled, abort the underlying HTTP request.
       onCancel(() => this._request.abort())
     })
@@ -104,7 +104,7 @@ class DownloadTask extends Task {
       // total size of the file.
       this._notify(this._downloaded, this._contentLength)
       response
-        .on('data', chunk => this._onData(chunk))
+        .on('data', (chunk) => this._onData(chunk))
         .once('end', () => this._resolve(Buffer.concat(this._data)))
     }
   }

@@ -36,7 +36,7 @@ export default class Task extends EventEmitter {
     this.emit('start')
     this._promise = this._start()
     return this._promise
-      .then(res => this._onResolve(res), err => this._onReject(err))
+      .then((res) => this._onResolve(res), (err) => this._onReject(err))
       .finally(() => {
         if (this._promise.isCancelled()) {
           this._onCancel()
