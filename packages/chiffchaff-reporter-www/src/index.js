@@ -45,7 +45,7 @@ export default class WwwReporter extends Reporter {
   }
 
   dispose () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._disposed = true
       this._scheduleReport()
       resolve()
@@ -57,14 +57,14 @@ export default class WwwReporter extends Reporter {
   }
 
   _scheduledReport () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._io.emit('data', this._lastData)
       resolve()
     }).then(() => this._disposed && this._completeDisposal())
   }
 
   _completeDisposal () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._limiter.stopAll()
       this._io.emit('end')
       this._io.close()
@@ -98,7 +98,7 @@ export default class WwwReporter extends Reporter {
 
   _createServer () {
     this._server = http.Server(this._app)
-    this._events.on(this._server, 'connection', conn => {
+    this._events.on(this._server, 'connection', (conn) => {
       this._connections.push(conn)
       this._events.once(conn, 'close', () => this._onClose(conn))
     })
@@ -107,7 +107,7 @@ export default class WwwReporter extends Reporter {
   _createIo () {
     this._io = socketIo(this._server, {serveClient: false})
     this._events.on(this._io.sockets, 'connection',
-      socket => this._onConnection(socket))
+      (socket) => this._onConnection(socket))
   }
 
   _listen () {
@@ -121,7 +121,7 @@ export default class WwwReporter extends Reporter {
   }
 
   _waitForConnection () {
-    return new Promise(resolve => this._io.on('connection', resolve))
+    return new Promise((resolve) => this._io.on('connection', resolve))
   }
 
   _onConnection (socket) {
