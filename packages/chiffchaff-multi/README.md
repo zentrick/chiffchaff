@@ -21,7 +21,7 @@ const urls = [
   'http://media.w3.org/2010/05/bunny/movie.mp4',
   'http://media.w3.org/2010/05/video/movie_300.webm'
 ]
-const downloadTasks = urls.map(url => new DownloadTask(url))
+const downloadTasks = urls.map((url) => new DownloadTask(url))
 ```
 
 Now, we could `start()` those tasks individually, but that's not what we're
@@ -64,8 +64,8 @@ subtasks have been completed.
 
 ```js
 cancellableTwoInParallelDownloadTask.start()
-  .then(result => console.info('All downloads completed'))
-  .catch(err => console.error('Error: %s', err))
+  .then((result) => console.info('All downloads completed'))
+  .catch((err) => console.error('Error: %s', err))
 ```
 
 Another one of chiffchaff's strengths is its built-in progress reporting.

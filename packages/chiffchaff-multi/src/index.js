@@ -9,7 +9,7 @@ import defaults from 'defaults'
 
 Promise.config({cancellation: true})
 
-const createDefaultWeights = num => {
+const createDefaultWeights = (num) => {
   const weight = 1 / num
   const weights = []
   for (let i = 0; i < num; ++i) {
@@ -18,7 +18,7 @@ const createDefaultWeights = num => {
   return weights
 }
 
-const createProgressArray = num => {
+const createProgressArray = (num) => {
   const progress = []
   for (let i = 0; i < num; ++i) {
     progress.push({done: false, completed: 0, total: -1})
@@ -42,7 +42,7 @@ const checkAndNormalizeWeights = (weights, count) => {
   if (total === 0) {
     throw new Error('Total weight cannot be 0')
   }
-  return weights.map(w => w / total)
+  return weights.map((w) => w / total)
 }
 
 export default class MultiTask extends Task {
@@ -93,13 +93,13 @@ export default class MultiTask extends Task {
     const onProgress = (compl, total) => this._setProgress(idx, compl, total)
     task.on('progress', onProgress)
     return promise
-      .then(res => {
+      .then((res) => {
         this.emit('endOne', task, idx, null, res)
         task.removeListener('progress', onProgress)
         this._onComplete(idx)
         return res
       })
-      .catch(err => {
+      .catch((err) => {
         debug(`Error from ${task}: ${err}`)
         this.emit('endOne', task, idx, err)
         task.removeListener('progress', onProgress)
@@ -160,14 +160,14 @@ export default class MultiTask extends Task {
   }
 
   _cancelAll () {
-    const promises = this._tasks.map(t => t.promise).filter(p => !!p)
+    const promises = this._tasks.map((t) => t.promise).filter((p) => !!p)
     debug(`Trying to cancel ${promises.length} promise(s)`)
-    promises.forEach(promise => promise.cancel())
+    promises.forEach((promise) => promise.cancel())
   }
 
   toString () {
     return this.name + (Array.isArray(this._tasks)
-      ? '<' + this._tasks.map(task => task.toString()).join(',') + '>'
+      ? '<' + this._tasks.map((task) => task.toString()).join(',') + '>'
       : '[' + this.size + ']')
   }
 }
