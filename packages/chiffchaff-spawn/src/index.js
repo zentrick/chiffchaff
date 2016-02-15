@@ -12,7 +12,7 @@ import {Stream} from 'stream'
 
 Promise.config({cancellation: true})
 
-const toBuffer = data => (typeof data === 'string') ? new Buffer(data) : data
+const toBuffer = (data) => (typeof data === 'string') ? new Buffer(data) : data
 
 export default class SpawnTask extends Task {
   constructor (command, args, source, options) {
@@ -75,20 +75,20 @@ export default class SpawnTask extends Task {
   }
 
   _addListeners () {
-    this._eventRegistry.once(this._proc, 'close', code => this._onClose(code))
-    this._eventRegistry.once(this._proc, 'error', err => this._onError(err))
+    this._eventRegistry.once(this._proc, 'close', (code) => this._onClose(code))
+    this._eventRegistry.once(this._proc, 'error', (err) => this._onError(err))
     if (this._options.captureStdout) {
-      this._eventRegistry.on(this._proc.stdout, 'data', data => this._onStdout(data))
+      this._eventRegistry.on(this._proc.stdout, 'data', (data) => this._onStdout(data))
     }
     if (this._options.captureStderr) {
-      this._eventRegistry.on(this._proc.stderr, 'data', data => this._onStderr(data))
+      this._eventRegistry.on(this._proc.stderr, 'data', (data) => this._onStderr(data))
     }
-    this._eventRegistry.on(this._proc.stdin, 'error', err => this._onStdinError(err))
+    this._eventRegistry.on(this._proc.stdin, 'error', (err) => this._onStdinError(err))
   }
 
   _pipeSource () {
     if (this._source instanceof Stream) {
-      this._eventRegistry.on(this._source, 'error', err => this._onSourceError(err))
+      this._eventRegistry.on(this._source, 'error', (err) => this._onSourceError(err))
       this._source.pipe(this._proc.stdin)
       this._source.resume()
       this._piped = true
