@@ -60,8 +60,6 @@
     "test": "node node_modules/standard/bin/cmd.js && gulp test"
   },
   "repository": "zentrick/chiffchaff-multi",
-  "bugs": {
-    "url": "https://github.com/zentrick/chiffchaff-multi"
-  },
+  "bugs": "https://github.com/zentrick/chiffchaff-multi",
   "license": "MIT"
 }
