@@ -59,8 +59,6 @@
     "test": "node node_modules/standard/bin/cmd.js && gulp test"
   },
   "repository": "zentrick/chiffchaff",
-  "bugs": {
-    "url": "https://github.com/zentrick/chiffchaff/issues"
-  },
+  "bugs": "https://github.com/zentrick/chiffchaff/issues",
   "license": "MIT"
 }
