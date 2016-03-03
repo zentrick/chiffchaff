@@ -19,6 +19,9 @@
     "promises-aplus"
   ],
   "author": "Zentrick nv (https://www.zentrick.com/)",
+  "contributors": [
+    "Tim De Pauw <tim.depauw@zentrick.com>"
+  ],
   "engines": {
     "node": ">=0.10.0"
   },
