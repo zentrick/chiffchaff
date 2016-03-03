@@ -70,8 +70,6 @@
     "test": "node node_modules/standard/bin/cmd.js && gulp test"
   },
   "repository": "zentrick/chiffchaff-reporter-www",
-  "bugs": {
-    "url": "https://github.com/zentrick/chiffchaff-reporter-www/issues"
-  },
+  "bugs": "https://github.com/zentrick/chiffchaff-reporter-www/issues",
   "license": "MIT"
 }
