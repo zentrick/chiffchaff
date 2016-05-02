@@ -35,17 +35,14 @@ export default class ConcatTask extends MultiTask {
   }
 
   _start () {
-    this._tasks = toTaskIterator(this._sources, this._destination)
-    return super._start()
-      .then(() => this._awaitFinish())
-  }
-
-  _awaitFinish () {
-    return new Promise((resolve, reject) => {
+    const ending = new Promise((resolve, reject) => {
       const reg = new EventRegistry()
       reg.onceFin(this._destination, 'finish', resolve)
       reg.onceFin(this._destination, 'error', reject)
-      this._destination.end()
     })
+    this._tasks = toTaskIterator(this._sources, this._destination)
+    return super._start()
+      .then(() => this._destination.end())
+      .then(() => ending)
   }
 }
