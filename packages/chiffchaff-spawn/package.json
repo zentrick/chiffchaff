@@ -30,6 +30,7 @@
     "bluebird": "^3.0.5",
     "chiffchaff": "^0.2.0",
     "cross-spawn-async": "^2.1.6",
+    "debug": "^2.2.0",
     "defaults": "^1.0.2",
     "event-registry": "^0.2.0"
   },
