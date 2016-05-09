@@ -17,27 +17,15 @@ const toBuffer = (data) => (typeof data === 'string') ? new Buffer(data) : data
 export default class SpawnTask extends Task {
   constructor (command, args, source, options) {
     super()
-    this._command = command
-    this._args = args
-    this._source = source
-    this._options = defaults(options, {
-      env: process.env,
-      captureStdout: false,
-      captureStderr: false
-    })
+    this.command = command
+    this.args = args
+    this.source = source
+    this.options = options
     this._proc = null
     this._stdout = new Buffer(0)
     this._stderr = new Buffer(0)
     this._piped = false
     this._eventRegistry = new EventRegistry()
-  }
-
-  get source () {
-    return this._source
-  }
-
-  set source (src) {
-    this._source = src
   }
 
   get command () {
@@ -56,6 +44,26 @@ export default class SpawnTask extends Task {
     this._args = args
   }
 
+  get source () {
+    return this._source
+  }
+
+  set source (src) {
+    this._source = src
+  }
+
+  get options () {
+    return this._options
+  }
+
+  set options (options) {
+    this._options = defaults(options, {
+      env: process.env,
+      captureStdout: false,
+      captureStderr: false
+    })
+  }
+
   _start () {
     return new Promise((resolve, reject, onCancel) => {
       this._resolve = resolve
@@ -69,7 +77,7 @@ export default class SpawnTask extends Task {
 
   _runCommand () {
     debug(`Running ${this.command} with args: ${this.args}`)
-    this._proc = spawn(this.command, this.args, this._options)
+    this._proc = spawn(this.command, this.args, this.options)
     this._proc.stdout.setEncoding('utf8')
     this._proc.stderr.setEncoding('utf8')
   }
@@ -77,20 +85,20 @@ export default class SpawnTask extends Task {
   _addListeners () {
     this._eventRegistry.once(this._proc, 'close', (code) => this._onClose(code))
     this._eventRegistry.once(this._proc, 'error', (err) => this._onError(err))
-    if (this._options.captureStdout) {
+    if (this.options.captureStdout) {
       this._eventRegistry.on(this._proc.stdout, 'data', (data) => this._onStdout(data))
     }
-    if (this._options.captureStderr) {
+    if (this.options.captureStderr) {
       this._eventRegistry.on(this._proc.stderr, 'data', (data) => this._onStderr(data))
     }
     this._eventRegistry.on(this._proc.stdin, 'error', (err) => this._onStdinError(err))
   }
 
   _pipeSource () {
-    if (this._source instanceof Stream) {
-      this._eventRegistry.on(this._source, 'error', (err) => this._onSourceError(err))
-      this._source.pipe(this._proc.stdin)
-      this._source.resume()
+    if (this.source instanceof Stream) {
+      this._eventRegistry.on(this.source, 'error', (err) => this._onSourceError(err))
+      this.source.pipe(this._proc.stdin)
+      this.source.resume()
       this._piped = true
     }
   }
@@ -98,7 +106,7 @@ export default class SpawnTask extends Task {
   _unpipeSource () {
     if (this._piped) {
       this._piped = false
-      this._source.unpipe(this._proc.stdin)
+      this.source.unpipe(this._proc.stdin)
     }
   }
 
