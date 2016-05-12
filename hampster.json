@@ -1,0 +1,27 @@
+{
+  "packages": [{
+    "name": "event-registry",
+    "repository": "git@github.com:timdp/event-registry.git"
+  }, {
+    "name": "chiffchaff",
+    "repository": "git@github.com:zentrick/chiffchaff.git"
+  }, {
+    "name": "chiffchaff-multi",
+    "repository": "git@github.com:zentrick/chiffchaff-multi.git"
+  }, {
+    "name": "chiffchaff-concat",
+    "repository": "git@github.com:zentrick/chiffchaff-concat.git"
+  }, {
+    "name": "chiffchaff-spawn",
+    "repository": "git@github.com:zentrick/chiffchaff-spawn.git"
+  }, {
+    "name": "chiffchaff-pipe",
+    "repository": "git@github.com:zentrick/chiffchaff-pipe.git"
+  }, {
+    "name": "chiffchaff-reporter",
+    "repository": "git@github.com:zentrick/chiffchaff-reporter.git"
+  }, {
+    "name": "chiffchaff-reporter-www",
+    "repository": "git@github.com:zentrick/chiffchaff-reporter-www.git"
+  }]
+}
