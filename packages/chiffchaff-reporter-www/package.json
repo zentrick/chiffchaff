@@ -71,7 +71,7 @@
     "clean": "gulp clean",
     "build": "gulp build",
     "prepublish": "npm run clean && npm run build",
-    "test": "node node_modules/standard/bin/cmd.js && gulp test"
+    "test": "gulp test"
   },
   "repository": "zentrick/chiffchaff-reporter-www",
   "bugs": "https://github.com/zentrick/chiffchaff-reporter-www/issues",
