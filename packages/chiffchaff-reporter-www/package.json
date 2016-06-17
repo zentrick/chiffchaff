@@ -55,6 +55,7 @@
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-standard": "^7.0.1",
+    "in-publish": "^2.0.0",
     "isparta": "^4.0.0",
     "run-sequence": "^1.1.5"
   },
@@ -70,7 +71,7 @@
     "postinstall": "bower install",
     "clean": "gulp clean",
     "build": "gulp build",
-    "prepublish": "npm run build",
+    "prepublish": "in-publish && npm run build || not-in-publish",
     "test": "gulp test"
   },
   "repository": "zentrick/chiffchaff-reporter-www",
