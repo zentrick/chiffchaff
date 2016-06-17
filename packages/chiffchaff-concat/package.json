@@ -61,7 +61,7 @@
   "scripts": {
     "build": "gulp build",
     "clean": "gulp clean",
-    "prepublish": "npm run clean && npm run build",
+    "prepublish": "npm run build",
     "test": "gulp test"
   },
   "repository": "zentrick/chiffchaff-concat",
