@@ -23,7 +23,7 @@
     "Tim De Pauw <tim.depauw@zentrick.com>"
   ],
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">= 4"
   },
   "dependencies": {
     "babel-runtime": "^6.3.19",
