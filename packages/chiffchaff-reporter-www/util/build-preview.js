@@ -1,6 +1,7 @@
 var Task = require('../../chiffchaff')
 var MultiTask = require('../../chiffchaff-multi')
 var WwwReporter = require('../')
+var Promise = Task.Promise
 
 function DownloadTask (progress) {
   Task.call(this)
