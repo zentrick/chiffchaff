@@ -1,6 +1,7 @@
 [Tt]humbs.db
 *.DS_Store
 npm-debug.log
+lerna-debug.log
 node_modules/
 coverage/
-/lib/
+/packages/*/lib/
