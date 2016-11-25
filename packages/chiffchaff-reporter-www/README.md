@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/chiffchaff-reporter-www.svg)](https://www.npmjs.com/package/chiffchaff-reporter-www) [![Dependencies](https://img.shields.io/david/zentrick/chiffchaff-reporter-www.svg)](https://david-dm.org/zentrick/chiffchaff-reporter-www) [![JavaScript Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Live HTML-based reporting for chiffchaff.
+Live HTML-based reporting for [chiffchaff](https://github.com/zentrick/chiffchaff/blob/master/packages/chiffchaff/README.md).
 
 ## Preview
 

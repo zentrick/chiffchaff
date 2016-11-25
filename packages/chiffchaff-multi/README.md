@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/chiffchaff-multi.svg)](https://www.npmjs.com/package/chiffchaff-multi) [![Dependencies](https://img.shields.io/david/zentrick/chiffchaff-multi.svg)](https://david-dm.org/zentrick/chiffchaff-multi) [![JavaScript Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Multi-task execution for [chiffchaff](https://github.com/zentrick/chiffchaff).
+Multi-task execution for [chiffchaff](https://github.com/zentrick/chiffchaff/blob/master/packages/chiffchaff/README.md).
 
 ## Example
 
@@ -11,7 +11,7 @@ _**Note:** Like chiffchaff itself, this example is written in ES2015. Please
 tackling it._
 
 Let's download a couple of files in parallel. Assuming we already have a
-[`DownloadTask` class](https://github.com/zentrick/chiffchaff#example), let's
+[`DownloadTask` class](https://github.com/zentrick/chiffchaff/blob/master/packages/chiffchaff/README.md#example), let's
 create a few of those:
 
 ```js
