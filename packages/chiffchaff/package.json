@@ -1,7 +1,7 @@
 {
-  "name": "chiffchaff-reporter-www",
-  "version": "0.4.1",
-  "description": "Live HTML-based reporting for chiffchaff.",
+  "name": "chiffchaff",
+  "version": "0.2.1",
+  "description": "Cancellable promises with progress reporting.",
   "keywords": [
     "async",
     "await",
@@ -28,23 +28,15 @@
   "dependencies": {
     "babel-runtime": "^6.3.19",
     "bluebird": "^3.0.5",
-    "bottleneck": "^1.9.1",
-    "chiffchaff-reporter": "^0.2.0",
-    "defaults": "^1.0.2",
-    "event-registry": "^0.2.0",
-    "express": "^4.13.3",
-    "open": "0.0.5",
-    "socket.io": "^1.3.6"
+    "debug": "^2.2.0"
   },
   "devDependencies": {
     "in-publish": "^2.0.0"
   },
   "main": "index.js",
   "files": [
-    "public/",
     "lib/",
-    "index.js",
-    "preview.svg"
+    "index.js"
   ],
   "scripts": {
     "clean": "gulp clean",

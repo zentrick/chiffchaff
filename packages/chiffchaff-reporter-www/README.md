@@ -6,7 +6,7 @@ Live HTML-based reporting for chiffchaff.
 
 ## Preview
 
-![Preview](https://rawgit.com/zentrick/chiffchaff-reporter-www/master/preview.svg)
+![Preview](https://rawgit.com/zentrick/chiffchaff/master/packages/chiffchaff-reporter-www/preview.svg)
 
 ## Usage
 
@@ -21,6 +21,10 @@ reporter.start()
     // Start some tasks and watch the magic happen.
   })
 ```
+
+## Acknowledgment
+
+This package contains [FavIconX](http://nicolasbize.com/faviconx/) by Nicolas Bize.
 
 ## Maintainer
 

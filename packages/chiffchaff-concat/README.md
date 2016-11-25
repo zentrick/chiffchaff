@@ -4,8 +4,6 @@
 
 Stream concatenation for [chiffchaff](https://github.com/zentrick/chiffchaff).
 
-Work in progress.
-
 ## Maintainer
 
 [Tim De Pauw](https://github.com/timdp)
