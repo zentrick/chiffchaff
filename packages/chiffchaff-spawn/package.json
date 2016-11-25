@@ -29,7 +29,7 @@
     "babel-runtime": "^6.3.19",
     "bluebird": "^3.0.5",
     "chiffchaff": "^0.2.0",
-    "cross-spawn-async": "^2.1.6",
+    "cross-spawn": "^5.0.1",
     "debug": "^2.2.0",
     "defaults": "^1.0.2",
     "event-registry": "^0.2.0"
